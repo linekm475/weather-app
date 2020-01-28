@@ -9,6 +9,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      search: "Stockholm",
       loading: true,
       error: null,
       description: "",
@@ -25,21 +26,27 @@ class App extends React.Component {
       feelsLike: null,
       rainfall: null
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentDidMount() {
-    this.handleSearch();
+    this.handleSubmit();
   }
 
-  handleSearch() {
+  handleSubmit(e) {
+    if (e) {
+      e.preventDefault();
+    }
     axios
       .get(
-        "https://api.openweathermap.org/data/2.5/weather?q=Stockholm,SE&appid=fe1d784597de2d1c99c36ffe308256b7&units=metric"
+        `https://api.openweathermap.org/data/2.5/weather?q=${this.state.search},SE&units=metric&appid=fe1d784597de2d1c99c36ffe308256b7`
       )
       .then(res => {
-        let rainfall;
+        console.log(res.data);
+        let rainfall = 0;
         if (res.data.rain && (res.data.rain["3h"] || res.data.rain["3h"])) {
-          rainfall = res.data.rain["3h"] || res.data.rain["3h"] || 0;
+          rainfall = res.data.rain["3h"] || res.data.rain["3h"];
         }
         this.setState({
           loading: false,
@@ -61,20 +68,27 @@ class App extends React.Component {
       .catch(err => {
         this.setState({
           loading: false,
-          error: err
+          error: err.response || err
         });
       });
   }
 
   render() {
     if (this.state.loading) return <h1>Loading...</h1>;
-    if (this.state.error) return <h1>Erorr: {this.state.error}</h1>;
+    if (this.state.error) {
+      console.log("Error: ", this.state.error);
+      return <h1>Error: {this.state.error.data.message}</h1>;
+    }
     return (
       <Layout>
         <Sidebar
+          search={this.state.search}
+          handleSubmit={this.handleSubmit}
+          updateSearch={e => this.setState({ search: e.target.value })}
           icon={this.state.icon}
           temp={this.state.temp}
           description={this.state.description}
+          rainfall={this.state.rainfall}
         />
         <WeatherInfo
           icon={this.state.icon}

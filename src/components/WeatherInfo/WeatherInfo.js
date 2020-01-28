@@ -15,7 +15,7 @@ function WeatherInfo({
 }) {
   return (
     <div className="info">
-      <img src="" alt="icon" />
+      <img src={`icons/${icon}.png`} alt="icon" />
       <h2>{temp}C</h2>
     </div>
   );
