@@ -1,27 +1,22 @@
 import React from "react";
 import "./Sidebar.css";
+import DayList from "../DayList/DayList";
 
-function Sidebar({ forecast }) {
+function Sidebar({ forecast, weather }) {
   console.log("sidebar forecast a", forecast);
   return (
     <aside className="sidebar">
-      {/*<section className="current">
-        <h2>Nuvarande</h2>
-        <img src={`icons/${weather.icon}.png`} alt="icon" />
-        <p>Temp: {weather.temp}</p>
-        <p>Nederbörd: {weather.rainfall}mm</p>
-  </section>*/}
+      <div className="day active">
+        <div className="left">
+          <h2>Nuvarande</h2>
+          <img src={`icons/${weather.weather[0].icon}.png`} alt="icon" />
+        </div>
+        <p className="temp">{Math.round(weather.main.temp)} °C</p>
+      </div>
       <section className="days">
         {forecast.map((day, idx) => {
           if (idx % 8 !== 0) return null;
-          return (
-            <div className="day" key={day.dt}>
-              <h2>{day.dt_txt}</h2>
-              <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
-              <p>Temp: {day.main.temp}</p>
-              <p>Nederbörd: {(day.rain && day.rain["3h"]) || "-"}mm</p>
-            </div>
-          );
+          return <DayList key={day.dt} day={day} />;
         })}
       </section>
     </aside>

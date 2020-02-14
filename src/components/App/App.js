@@ -12,21 +12,8 @@ class App extends React.Component {
       search: "Stockholm",
       loading: true,
       error: null,
-      currentWeather: {
-        description: "",
-        icon: "",
-        minTemp: null,
-        maxTemp: null,
-        temp: null,
-        pressure: null,
-        humidity: null,
-        windSpeed: null,
-        windDir: null,
-        country: "",
-        name: "",
-        feelsLike: null,
-        rainfall: null
-      }
+      currentWeather: null,
+      forecastWeather: null
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,30 +44,11 @@ class App extends React.Component {
         const current = res[0].data;
         const forecast = res[1].data;
 
-        // checka ifall APIen skicka tillbaka data om nederbörd, annars är nederbörd 0
-        let rainfall = 0;
-        if (current.rain && (current.rain["3h"] || current.rain["3h"])) {
-          rainfall = current.rain["3h"] || current.rain["3h"];
-        }
         console.log("current", current);
         this.setState({
           loading: false,
           // spara väderdata för nutid
-          currentWeather: {
-            description: current.weather[0].description,
-            icon: current.weather[0].icon,
-            minTemp: current.main.temp_min,
-            maxTemp: current.main.temp_max,
-            temp: current.main.temp,
-            pressure: current.main.pressure,
-            humidity: current.main.humidity,
-            windSpeed: current.wind.speed,
-            windDeg: current.wind.deg,
-            country: current.sys.country,
-            name: current.name,
-            feelsLike: current.main.feels_like,
-            rainfall: rainfall
-          },
+          currentWeather: current,
           // spara data för prognos, är en array för varje tid prognosen visar(var tredje timme 5 dagar framåt)
           forecastWeather: forecast.list
         });
@@ -98,13 +66,19 @@ class App extends React.Component {
 
   render() {
     if (this.state.loading) return <h1>Loading...</h1>;
-    if (this.state.error) {
+    if (this.state.error && this.state.error.data) {
       console.log("Error: ", this.state.error);
       return <h1>Error: {this.state.error.data.message}</h1>;
+    } else if (this.state.error) {
+      console.log("Error: ", this.state.error);
+      return <h1>Error: {this.state.error.message || ""}</h1>;
     }
     return (
       <Layout>
-        <Sidebar forecast={this.state.forecastWeather} />
+        <Sidebar
+          forecast={this.state.forecastWeather}
+          weather={this.state.currentWeather}
+        />
         <WeatherInfo
           search={this.state.search}
           handleSubmit={this.handleSubmit}

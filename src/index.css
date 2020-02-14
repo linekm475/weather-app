@@ -11,3 +11,11 @@
 body {
   background-color: white;
 }
+
+/* Variables */
+:root {
+  --bg-color: #22292f;
+  --bg-hover: #3d4852;
+  --bg-active: #12283a;
+  --light-gray: #8795a1;
+}

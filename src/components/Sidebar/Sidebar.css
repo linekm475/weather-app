@@ -1,2 +1,4 @@
 aside.sidebar {
+  background-color: var(--bg-color);
+  color: white;
 }
