@@ -1,9 +1,26 @@
 import React from "react";
 import axios from "axios";
-import "./App.css";
-import Sidebar from "../Sidebar/Sidebar";
-import WeatherInfo from "../WeatherInfo/WeatherInfo";
-import Layout from "../Layout/Layout";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
+
+import theme from "../theme";
+import Sidebar from "./Sidebar";
+import WeatherInfo from "./WeatherInfo";
+import Layout from "./Layout";
+
+const GlobalStyle = createGlobalStyle`
+  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap");
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  body {
+    background-color: white;
+  }
+`;
 
 class App extends React.Component {
   constructor(props) {
@@ -73,19 +90,27 @@ class App extends React.Component {
       console.log("Error: ", this.state.error);
       return <h1>Error: {this.state.error.message || ""}</h1>;
     }
+    {
+      /* ThemeProvider get applikationen ett tema som är definerat i src/theme.js ett tema för att enkelt kunna använda färger */
+    }
     return (
-      <Layout>
-        <Sidebar
-          forecast={this.state.forecastWeather}
-          weather={this.state.currentWeather}
-        />
-        <WeatherInfo
-          search={this.state.search}
-          handleSubmit={this.handleSubmit}
-          updateSearch={e => this.setState({ search: e.target.value })}
-          weather={this.state.currentWeather}
-        />
-      </Layout>
+      <>
+        <GlobalStyle />
+        <ThemeProvider theme={theme}>
+          <Layout>
+            <Sidebar
+              forecast={this.state.forecastWeather}
+              weather={this.state.currentWeather}
+            />
+            <WeatherInfo
+              search={this.state.search}
+              handleSubmit={this.handleSubmit}
+              updateSearch={e => this.setState({ search: e.target.value })}
+              weather={this.state.currentWeather}
+            />
+          </Layout>
+        </ThemeProvider>
+      </>
     );
   }
 }

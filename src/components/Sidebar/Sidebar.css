@@ -2,3 +2,8 @@ aside.sidebar {
   background-color: var(--bg-color);
   color: white;
 }
+
+.day.active {
+  background-color: var(--bg-hover);
+  border: none;
+}

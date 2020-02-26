@@ -1,5 +1,5 @@
 import React from "react";
-import "./WeatherInfo.css";
+import styled from "styled-components";
 
 function WeatherInfo({ weather, handleSubmit, updateSearch, search }) {
   // checka ifall APIen skicka tillbaka data om nederbörd, annars är nederbörd 0
@@ -9,7 +9,7 @@ function WeatherInfo({ weather, handleSubmit, updateSearch, search }) {
   }
 
   return (
-    <main className="weather">
+    <StyledWeatherInfo>
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -22,8 +22,12 @@ function WeatherInfo({ weather, handleSubmit, updateSearch, search }) {
       </form>
       <img src={`icons/${weather.weather[0].icon}.png`} alt="icon" />
       <h2>{weather.main.temp}C</h2>
-    </main>
+    </StyledWeatherInfo>
   );
 }
+
+const StyledWeatherInfo = styled.main`
+  background-color: ${props => props.theme.colors.gray[7]};
+`;
 
 export default WeatherInfo;

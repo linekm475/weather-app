@@ -1,6 +1,7 @@
 import React from "react";
 import * as moment from "moment";
-import "./DayList.css";
+
+import Day from "./Day";
 
 function DayList({ day }) {
   // formatera till ett mer användarvänligt format på datumet
@@ -15,13 +16,13 @@ function DayList({ day }) {
     .replace("Saturday", "Lördag")
     .replace("Sunday", "Söndag");
   return (
-    <div className="day">
+    <Day>
       <div className="left">
         <h2>{date}</h2>
         <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
       </div>
       <p className="temp">{Math.round(day.main.temp)} °C</p>
-    </div>
+    </Day>
   );
 }
 
