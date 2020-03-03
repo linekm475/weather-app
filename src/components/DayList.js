@@ -18,7 +18,7 @@ function DayList({ day }) {
   return (
     <Day>
       <h2>{date}</h2>
-      <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
+      <img src={`icons/${day.weather[0].icon}.svg`} alt="icon" />
       <p className="temp">{Math.round(day.main.temp)} °C</p>
     </Day>
   );

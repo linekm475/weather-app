@@ -11,7 +11,7 @@ function Sidebar({ forecast, weather }) {
       <Link to="/current" style={{ textDecoration: "none" }}>
         <Day active>
           <h2>Nuvarande</h2>
-          <img src={`icons/${weather.weather[0].icon}.png`} alt="icon" />
+          <img src={`icons/${weather.weather[0].icon}.svg`} alt="icon" />
           <p className="temp">{Math.round(weather.main.temp)} °C</p>
         </Day>
       </Link>
@@ -23,7 +23,7 @@ function Sidebar({ forecast, weather }) {
               key={day.dt}
               to={{
                 pathname: "/forecast",
-                state: { day, forecast },
+                state: { day, forecast }
               }}
               style={{ textDecoration: "none" }}
             >

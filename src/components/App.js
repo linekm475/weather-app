@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 
@@ -26,6 +26,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       search: "Stockholm",
+      city: "",
       loading: true,
       error: null,
       currentWeather: null,
@@ -66,7 +67,8 @@ class App extends React.Component {
           // spara väderdata för nutid
           currentWeather: current,
           // spara data för prognos, är en array för varje tid prognosen visar(var tredje timme 5 dagar framåt)
-          forecastWeather: forecast.list
+          forecastWeather: forecast.list,
+          city: forecast.city.name
         });
         console.log("forecast", forecast);
       })
@@ -114,8 +116,11 @@ class App extends React.Component {
                     <WeatherInfo
                       search={this.state.search}
                       handleSubmit={this.handleSubmit}
-                      updateSearch={e => this.setState({ search: e.target.value })}
+                      updateSearch={e =>
+                        this.setState({ search: e.target.value })
+                      }
                       day={this.state.currentWeather}
+                      city={this.state.city}
                     />
                   )}
                 />
@@ -125,8 +130,11 @@ class App extends React.Component {
                     <WeatherInfo
                       search={this.state.search}
                       handleSubmit={this.handleSubmit}
-                      updateSearch={e => this.setState({ search: e.target.value })}
+                      updateSearch={e =>
+                        this.setState({ search: e.target.value })
+                      }
                       day={null}
+                      city={this.state.city}
                     />
                   )}
                 />

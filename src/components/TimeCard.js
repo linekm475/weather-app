@@ -5,7 +5,7 @@ import moment from "moment";
 const TimeCard = ({ day }) => (
   <StyledTimeCard>
     <p className="date">{moment(day.dt_txt).format("HH:mm")}</p>
-    <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
+    <img src={`icons/${day.weather[0].icon}.svg`} alt="icon" />
     <p className="desc">{day.weather[0].description}</p>
     <p className="temp">{Math.round(day.main.temp)}C</p>
   </StyledTimeCard>
@@ -24,12 +24,6 @@ const StyledTimeCard = styled.div`
   max-width: 80px;
   min-width: 80px;
   text-align: center;
-  cursor: pointer;
-  transition: 0.2s;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-  }
 
   .date {
     font-size: 12px;

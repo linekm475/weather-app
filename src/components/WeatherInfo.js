@@ -11,15 +11,15 @@ function WeatherInfo({
   handleSubmit,
   updateSearch,
   search,
-  location,
-  forecast
+  city,
+  location
 }) {
   console.log("location: ", location);
   console.log("w forecast: ", location.state);
   let weather;
-  if(!day && location && location.state && location.state.day) {
+  if (!day && location && location.state && location.state.day) {
     weather = location.state.day;
-  } else if(day) {
+  } else if (day) {
     weather = day;
   } else {
     return <Redirect to="/current" />;
@@ -39,28 +39,32 @@ function WeatherInfo({
         search={search}
       />
       <div className="info">
+        <img src={`icons/${weather.weather[0].icon}.svg`} alt="icon" />
         <div>
-          <img src={`icons/${weather.weather[0].icon}.png`} alt="icon" />
-          <h1>{search}, SE</h1>
-          <h2>{Math.round(weather.main.temp)}C</h2>
+          <h1>{city}, SE</h1>
+          <h2>{Math.round(weather.main.temp)} &deg;C</h2>
           <p>{weather.weather[0].description}</p>
         </div>
-        <div>
-          <p>Känns som: {Math.round(weather.main.feels_like)}</p>
+        <div className="right">
+          <p>Känns som: {Math.round(weather.main.feels_like)} &deg;C</p>
           <p>Vind: {weather.wind.speed}</p>
-          <p>Fuktighet: </p>
-          <p>Min: {Math.round(weather.main.temp_min)}</p>
-          <p>Max: {Math.round(weather.main.temp_max)}</p>
+          <p>Fuktighet: {weather.main.humidity}</p>
+          <p>Min: {Math.round(weather.main.temp_min)} &deg;C</p>
+          <p>Max: {Math.round(weather.main.temp_max)} &deg;C</p>
         </div>
       </div>
       <div className="day-forecast">
         {location &&
-        location.state &&
-        location.state.forecast &&
-        location.state.forecast.filter(day => {
-          return moment(day.dt_txt)
-            .format("dddd") === moment(weather.dt_txt).format("dddd");
-        }).map(day => <TimeCard day={day} />)}
+          location.state &&
+          location.state.forecast &&
+          location.state.forecast
+            .filter(day => {
+              return (
+                moment(day.dt_txt).format("dddd") ===
+                moment(weather.dt_txt).format("dddd")
+              );
+            })
+            .map(day => <TimeCard day={day} />)}
       </div>
     </StyledWeatherInfo>
   );
@@ -76,9 +80,38 @@ const StyledWeatherInfo = styled.main`
 
   .info {
     margin: auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    //display: flex;
+    //align-items: center;
+    //justify-content: center;
+
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    grid-gap: 0 30px;
+
+    img {
+      grid-column: 1 / span 2;
+    }
+
+    h1 {
+      font-weight: 400;
+    }
+
+    h2 {
+      font-size: 45px;
+      margin: 8px 0;
+    }
+
+    .right {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      p {
+        margin: auto 0;
+      }
+    }
   }
 
   .day-forecast {
