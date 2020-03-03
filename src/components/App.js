@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
 
@@ -8,8 +9,6 @@ import WeatherInfo from "./WeatherInfo";
 import Layout from "./Layout";
 
 const GlobalStyle = createGlobalStyle`
-  @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap");
-
   * {
     margin: 0;
     padding: 0;
@@ -97,18 +96,43 @@ class App extends React.Component {
       <>
         <GlobalStyle />
         <ThemeProvider theme={theme}>
-          <Layout>
-            <Sidebar
-              forecast={this.state.forecastWeather}
-              weather={this.state.currentWeather}
-            />
-            <WeatherInfo
-              search={this.state.search}
-              handleSubmit={this.handleSubmit}
-              updateSearch={e => this.setState({ search: e.target.value })}
-              weather={this.state.currentWeather}
-            />
-          </Layout>
+          <BrowserRouter>
+            <Layout>
+              <Sidebar
+                forecast={this.state.forecastWeather}
+                weather={this.state.currentWeather}
+              />
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Redirect to="/current" />}
+                />
+                <Route
+                  path="/current"
+                  render={() => (
+                    <WeatherInfo
+                      search={this.state.search}
+                      handleSubmit={this.handleSubmit}
+                      updateSearch={e => this.setState({ search: e.target.value })}
+                      day={this.state.currentWeather}
+                    />
+                  )}
+                />
+                <Route
+                  path="/forecast"
+                  render={() => (
+                    <WeatherInfo
+                      search={this.state.search}
+                      handleSubmit={this.handleSubmit}
+                      updateSearch={e => this.setState({ search: e.target.value })}
+                      day={null}
+                    />
+                  )}
+                />
+              </Switch>
+            </Layout>
+          </BrowserRouter>
         </ThemeProvider>
       </>
     );

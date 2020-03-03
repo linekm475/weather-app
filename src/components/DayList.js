@@ -1,11 +1,11 @@
 import React from "react";
-import * as moment from "moment";
+import moment from "moment";
 
 import Day from "./Day";
 
 function DayList({ day }) {
   // formatera till ett mer användarvänligt format på datumet
-  let date = moment(day.dt_txt).format("dddd, HH:00");
+  let date = moment(day.dt_txt).format("dddd");
   // ändra från engelska till svenska på dagarnas namn
   date = date
     .replace("Monday", "Måndag")
@@ -17,10 +17,8 @@ function DayList({ day }) {
     .replace("Sunday", "Söndag");
   return (
     <Day>
-      <div className="left">
-        <h2>{date}</h2>
-        <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
-      </div>
+      <h2>{date}</h2>
+      <img src={`icons/${day.weather[0].icon}.png`} alt="icon" />
       <p className="temp">{Math.round(day.main.temp)} °C</p>
     </Day>
   );
