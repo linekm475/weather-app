@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
-import { ThemeProvider, createGlobalStyle } from "styled-components";
+import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
 
 import theme from "../theme";
 import Sidebar from "./Sidebar";
 import WeatherInfo from "./WeatherInfo";
 import Layout from "./Layout";
 import Loading from "./Loading";
+import Overlay from "./Overlay";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -36,13 +36,11 @@ const App = () => {
     handleSubmit(null);
     handleResize();
     window.addEventListener("resize", handleResize);
-  }, []);
 
-  useEffect(() => {
-    if (isOpen) {
-      // inte klar
+    return () => {
+      window.removeEventListener("resize", handleResize);
     }
-  }, [isOpen]);
+  }, []);
 
   const handleResize = e => {
     if (window.innerWidth > 950) {
@@ -70,8 +68,6 @@ const App = () => {
       .then(res => {
         const current = res[0].data;
         const forecast = res[1].data;
-        console.log("current: ", current);
-        console.log("forecast: ", forecast);
 
         // spara väderdata för nutid
         setCurrentWeather(current);
@@ -99,7 +95,7 @@ const App = () => {
   }
   return (
     <>
-      <GlobalStyle />
+      <GlobalStyle isOpen={isOpen} />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Layout>
@@ -119,6 +115,7 @@ const App = () => {
                     handleSubmit={handleSubmit}
                     updateSearch={e => setSearch(e.target.value)}
                     current={currentWeather}
+                    forecast={null}
                     city={city}
                     isLoading={isLoading}
                     isOpen={isOpen}
@@ -134,6 +131,7 @@ const App = () => {
                     handleSubmit={handleSubmit}
                     updateSearch={e => setSearch(e.target.value)}
                     current={null}
+                    forecast={forecastWeather}
                     city={city}
                     isLoading={isLoading}
                     isOpen={isOpen}
@@ -142,6 +140,10 @@ const App = () => {
                 )}
               />
             </Switch>
+            <Overlay
+              isOpen={isOpen}
+              onClick={() => setIsOpen(false)}
+            />
           </Layout>
         </BrowserRouter>
       </ThemeProvider>

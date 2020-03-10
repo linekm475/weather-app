@@ -26,7 +26,7 @@ const StyledForm = styled.form`
     color: white;
     border: 2px solid ${props => props.theme.colors.gray[8]};
     border-radius: 4px 0 0 4px;
-    font-size: 16px;
+    font-size: 17px;
     padding: 8px;
     outline: none;
 
@@ -51,6 +51,10 @@ const StyledForm = styled.form`
     padding: 9px 25px;
     cursor: pointer;
     height: 100%;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
   }
 `;
 

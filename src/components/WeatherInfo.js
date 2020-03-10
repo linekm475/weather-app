@@ -11,6 +11,7 @@ import Loading from "./Loading";
 
 function WeatherInfo({
   current,
+  forecast,
   handleSubmit,
   updateSearch,
   search,
@@ -20,23 +21,19 @@ function WeatherInfo({
   setIsOpen,
   isLoading
 }) {
-  //const [weather, setWeather] = useState(null);
-  const { day } = useParams();
+  const { day } = useParams();
   let weather;
-  if (
-    !weather &&
-    !current &&
-    location &&
-    location.state &&
-    location.state.day
-  ) {
-    weather = location.state.day;
-    //setWeather(location.state.day);
-    console.log("not current");
-  } else if (!weather && current) {
+  let dayForecast;
+  if (!weather && current) {
     weather = current;
-    //setWeather(current);
-    console.log("curreeeeent");
+  } else if (!weather && forecast) {
+    dayForecast = forecast.filter(dayForecast => (
+      moment(dayForecast.dt_txt).format("dddd").toLowerCase() === day
+    ));
+    const middle = Math.round(dayForecast.length / 2);
+    weather = dayForecast[middle];
+  } else {
+    return <Redirect to="/current" />
   }
 
   // checka ifall APIen skicka tillbaka data om nederbörd, annars är nederbörd 0
@@ -77,22 +74,12 @@ function WeatherInfo({
             </div>
           </div>
           <div className="day-forecast">
-            {location &&
-              location.state &&
-              location.state.forecast &&
-              location.state.forecast
-                .filter(day => {
-                  return (
-                    moment(day.dt_txt).format("dddd") ===
-                    moment(weather.dt_txt).format("dddd")
-                  );
-                })
-                .map(day => (
-                  <TimeCard
-                    key={`${day.dt}${day.wind.speed}${day.wind.deg}`}
-                    day={day}
-                  />
-                ))}
+            {dayForecast && dayForecast.map(day => (
+              <TimeCard
+                key={`${day.dt}${day.wind.speed}${day.wind.deg}`}
+                day={day}
+              />
+            ))}
           </div>
         </>
       )}
@@ -108,11 +95,13 @@ const StyledWeatherInfo = styled.main`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
   margin-left: 184px;
   padding: 60px 0;
   color: white;
 
   .menu-open {
+    z-index: 100;
     display: none;
     position: absolute;
     top: 26px;
@@ -130,7 +119,7 @@ const StyledWeatherInfo = styled.main`
   }
 
   .info {
-    margin: auto;
+    margin: 40px auto;
 
     display: grid;
     grid-template-columns: auto auto;
@@ -165,14 +154,41 @@ const StyledWeatherInfo = styled.main`
   }
 
   .day-forecast {
+    width: 95%;
+    margin: 0 auto;
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
-  @media (max-width: 950px) {
+  @media ${props => props.theme.breakpoints.md} {
     margin-left: 0;
 
     .menu-open {
       display: unset;
+    }
+
+    .info {
+      img {
+        max-width: 150px;
+      }
+    }
+  }
+
+  @media ${props => props.theme.breakpoints.md} {
+    .info {
+      grid-gap: 20px 10px;
+      img {
+        max-width: 100px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+    }
+
+    .day-forecast {
+
     }
   }
 `;

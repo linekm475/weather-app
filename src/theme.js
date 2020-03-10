@@ -12,5 +12,10 @@ export default {
       "#1A202C"
     ],
     error: "#E53E3E"
-  }
+  },
+  breakpoints: {
+    xs: "(max-width: 425px)",
+    sm: "(max-width: 768px)",
+    md: "(max-width: 950px)",
+  },
 };

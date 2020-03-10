@@ -14,13 +14,13 @@ const TimeCard = ({ day }) => (
 const StyledTimeCard = styled.div`
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.1);
   padding: 10px;
   margin: 4px;
+  width: 80px;
   max-width: 80px;
   min-width: 80px;
   text-align: center;

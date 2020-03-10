@@ -65,6 +65,7 @@ function Sidebar({ forecast, isOpen, setIsOpen }) {
 }
 
 const StyledSidebar = styled.aside`
+  z-index: 10;
   position: fixed;
   display: grid;
   grid-template-rows: 1fr repeat(2, auto) 3fr;
@@ -108,7 +109,7 @@ const StyledSidebar = styled.aside`
     margin-bottom: 20px;
   }
 
-  @media (max-width: 950px) {
+  @media ${props => props.theme.breakpoints.md} {
     transform: ${props => (props.isOpen ? "" : "translateX(-300px)")};
 
     .menu-icon {
