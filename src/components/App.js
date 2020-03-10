@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
@@ -7,6 +7,7 @@ import theme from "../theme";
 import Sidebar from "./Sidebar";
 import WeatherInfo from "./WeatherInfo";
 import Layout from "./Layout";
+import Loading from "./Loading";
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -21,130 +22,119 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      search: "Stockholm",
-      city: "",
-      loading: true,
-      error: null,
-      currentWeather: null,
-      forecastWeather: null
-    };
+const App = () => {
+  const [search, setSearch] = useState("Stockholm");
+  const [city, setCity] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentWeather, setCurrentWeather] = useState(null);
+  const [forecastWeather, setForecastWeather] = useState(null);
+  const [isOpen, setIsOpen] = useState(true);
+  // const [isMobile, setIsMobile] = useState(false);
 
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  useEffect(() => {
+    handleSubmit(null);
+  }, []);
 
-  componentDidMount() {
-    this.handleSubmit();
-  }
-
-  handleSubmit(e) {
+  const handleSubmit = (e) => {
     if (e) {
       e.preventDefault();
     }
 
     // skicka förfrågan om väderdata både för nutid och en prognos för 5 dagar
     const current = axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${this.state.search},SE&units=metric&appid=fe1d784597de2d1c99c36ffe308256b7`
+      `https://api.openweathermap.org/data/2.5/weather?q=${search},SE&units=metric&appid=fe1d784597de2d1c99c36ffe308256b7&lang=se`
     );
     const forecast = axios.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${this.state.search},SE&units=metric&appid=fe1d784597de2d1c99c36ffe308256b7`
+      `https://api.openweathermap.org/data/2.5/forecast?q=${search},SE&units=metric&appid=fe1d784597de2d1c99c36ffe308256b7&lang=se`
     );
 
     // vänta tills svar har kommit tillbaka från båda
     Promise.all([current, forecast])
       .then(res => {
-        console.log("pa values", res);
-
         const current = res[0].data;
         const forecast = res[1].data;
+        console.log("current: ", current);
+        console.log("forecast: ", forecast);
 
-        console.log("current", current);
-        this.setState({
-          loading: false,
-          // spara väderdata för nutid
-          currentWeather: current,
-          // spara data för prognos, är en array för varje tid prognosen visar(var tredje timme 5 dagar framåt)
-          forecastWeather: forecast.list,
-          city: forecast.city.name
-        });
-        console.log("forecast", forecast);
+        // spara väderdata för nutid
+        setCurrentWeather(current);
+        // spara data för prognos, är en array för varje tid prognosen visar
+        // (var tredje timme 5 dagar framåt)
+        setForecastWeather(forecast.list);
+        setCity(forecast.city.name);
       })
       .catch(err => {
         // om APIen skickar tillbaka ett error
-        console.log("pa err", err.response || err);
-        this.setState({
-          loading: false,
-          error: err.response || err
-        });
+        setError(err.response || err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }
 
-  render() {
-    if (this.state.loading) return <h1>Loading...</h1>;
-    if (this.state.error && this.state.error.data) {
-      console.log("Error: ", this.state.error);
-      return <h1>Error: {this.state.error.data.message}</h1>;
-    } else if (this.state.error) {
-      console.log("Error: ", this.state.error);
-      return <h1>Error: {this.state.error.message || ""}</h1>;
-    }
-    {
-      /* ThemeProvider get applikationen ett tema som är definerat i src/theme.js ett tema för att enkelt kunna använda färger */
-    }
-    return (
-      <>
-        <GlobalStyle />
-        <ThemeProvider theme={theme}>
-          <BrowserRouter>
-            <Layout>
-              <Sidebar
-                forecast={this.state.forecastWeather}
-                weather={this.state.currentWeather}
-              />
-              <Switch>
-                <Route
-                  exact
-                  path="/"
-                  render={() => <Redirect to="/current" />}
-                />
-                <Route
-                  path="/current"
-                  render={() => (
-                    <WeatherInfo
-                      search={this.state.search}
-                      handleSubmit={this.handleSubmit}
-                      updateSearch={e =>
-                        this.setState({ search: e.target.value })
-                      }
-                      day={this.state.currentWeather}
-                      city={this.state.city}
-                    />
-                  )}
-                />
-                <Route
-                  path="/forecast"
-                  render={() => (
-                    <WeatherInfo
-                      search={this.state.search}
-                      handleSubmit={this.handleSubmit}
-                      updateSearch={e =>
-                        this.setState({ search: e.target.value })
-                      }
-                      day={null}
-                      city={this.state.city}
-                    />
-                  )}
-                />
-              </Switch>
-            </Layout>
-          </BrowserRouter>
-        </ThemeProvider>
-      </>
-    );
+  if (error && error.data) {
+    return <h1>Error: {error.data.message}</h1>;
+  } else if (error) {
+    return <h1>Error: {error.message || ""}</h1>;
   }
+  {
+    /* ThemeProvider get applikationen ett tema som är definerat i src/theme.js ett tema för att enkelt kunna använda färger */
+  }
+  return (
+    <>
+      <GlobalStyle />
+      <ThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Layout>
+            {isOpen && (
+              <Sidebar
+                forecast={forecastWeather}
+                weather={currentWeather}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+              />
+            )}
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => <Redirect to="/current" />}
+              />
+              <Route
+                path="/current"
+                render={() => (
+                  <WeatherInfo
+                    search={search}
+                    handleSubmit={handleSubmit}
+                    updateSearch={e => setSearch(e.target.value)}
+                    current={currentWeather}
+                    city={city}
+                    isOpen={isOpen}
+                    isLoading={isLoading}
+                  />
+                )}
+              />
+              <Route
+                path="/f/:day"
+                render={() => (
+                  <WeatherInfo
+                    search={search}
+                    handleSubmit={handleSubmit}
+                    updateSearch={e => setSearch(e.target.value)}
+                    current={null}
+                    city={city}
+                    isOpen={isOpen}
+                    isLoading={isLoading}
+                  />
+                )}
+              />
+            </Switch>
+          </Layout>
+        </BrowserRouter>
+      </ThemeProvider>
+    </>
+  );
 }
 
 export default App;

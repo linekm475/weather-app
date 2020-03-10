@@ -1,5 +1,7 @@
 import React from "react";
 import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = ({ handleSubmit, updateSearch, search }) => (
   <StyledForm onSubmit={handleSubmit}>
@@ -10,7 +12,9 @@ const Search = ({ handleSubmit, updateSearch, search }) => (
       onBlur={updateSearch}
       value={search}
     />
-    <button type="submit">Sök</button>
+    <button type="submit">
+      <FontAwesomeIcon icon={faSearch} />
+    </button>
   </StyledForm>
 );
 

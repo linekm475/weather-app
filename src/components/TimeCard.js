@@ -5,9 +5,9 @@ import moment from "moment";
 const TimeCard = ({ day }) => (
   <StyledTimeCard>
     <p className="date">{moment(day.dt_txt).format("HH:mm")}</p>
-    <img src={`icons/${day.weather[0].icon}.svg`} alt="icon" />
+    <img src={`/icons/${day.weather[0].icon}.svg`} alt="icon" />
     <p className="desc">{day.weather[0].description}</p>
-    <p className="temp">{Math.round(day.main.temp)}C</p>
+    <p className="temp">{Math.round(day.main.temp)}&deg;C</p>
   </StyledTimeCard>
 );
 
@@ -32,7 +32,8 @@ const StyledTimeCard = styled.div`
 
   img {
     width: 50px;
-    margin: auto;
+    max-height: 35px;
+    margin: 5px auto;
   }
 
   .desc {

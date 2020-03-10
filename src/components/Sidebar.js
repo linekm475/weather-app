@@ -1,34 +1,64 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import styled from "styled-components";
-import DayList from "./DayList";
-import Day from "./Day";
+import moment from "moment";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import StyledLink from "./StyledLink";
 
-function Sidebar({ forecast, weather }) {
-  console.log("sidebar forecast a", forecast);
+function translateDate(date) {
+  switch(date) {
+    case "Monday":
+      return "Måndag";
+    case "Tuesday":
+      return "Tisdag";
+    case "Wednesday":
+      return "Onsdag";
+    case "Thursday":
+      return "Torsdag";
+    case "Friday":
+      return "Fredag";
+    case "Saturday":
+      return "Lördag";
+    case "Sunday":
+      return "Söndag";
+    default:
+      return "";
+  }
+}
+
+function Sidebar({ forecast, weather, isOpen, setIsOpen }) {
   return (
     <StyledSidebar>
-      <Link to="/current" style={{ textDecoration: "none" }}>
-        <Day active>
-          <h2>Nuvarande</h2>
-          <img src={`icons/${weather.weather[0].icon}.svg`} alt="icon" />
-          <p className="temp">{Math.round(weather.main.temp)} °C</p>
-        </Day>
-      </Link>
+      <FontAwesomeIcon
+        icon={faTimes}
+        className="menu-icon"
+        onClick={() => setIsOpen(!isOpen)}
+      />
+      <StyledLink
+        className="current-link"
+        activeClassName="active"
+        to="/current"
+      >
+        Nutid
+      </StyledLink>
       <section className="days">
-        {forecast.map((day, idx, forecast) => {
+        <p className="forecast">Prognos</p>
+        {forecast && forecast.map((day, idx, forecast) => {
           if (idx % 8 !== 0) return null;
+          const date = moment(day.dt_txt).format("dddd");
+          let translatedDay = translateDate(date);
+          const displayDate = date.replace(date, translatedDay);
           return (
-            <Link
-              key={day.dt}
+            <StyledLink
+              key={`${day.dt}${day.wind.speed}${day.wind.deg}`}
+              activeClassName="active"
               to={{
-                pathname: "/forecast",
+                pathname: `/f/${moment(day.dt_txt).format("dddd").toLowerCase()}`, //"/forecast",
                 state: { day, forecast }
               }}
-              style={{ textDecoration: "none" }}
             >
-              <DayList day={day} />
-            </Link>
+              {displayDate}
+            </StyledLink>
           );
         })}
       </section>
@@ -37,14 +67,48 @@ function Sidebar({ forecast, weather }) {
 }
 
 const StyledSidebar = styled.aside`
+  position: fixed;
+  // display: flex;
+  // flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr repeat(2, auto) 3fr;
   background-color: ${props => props.theme.colors.gray[8]};
   color: white;
-  max-height: 100%;
-  overflow: scroll;
+  height: 100%;
+  width: 184px;
+  padding: 26px 22px;
+  transition: 0.2s;
 
-  .day.active {
-    background-color: ${props => props.theme.colors[5]};
-    border: none;
+  .menu-icon {
+    grid-row: 1 / span 1;
+    font-size: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
+
+  .current-link {
+    grid-row: 3 / span 1;
+  }
+
+  .days {
+    grid-area: 4 / span 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .days .forecast {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 50px;
+    margin-bottom: 20px;
   }
 `;
 
