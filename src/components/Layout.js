@@ -5,7 +5,8 @@ const Layout = styled.div`
   // grid-template-columns: 184px 1fr;
   // grid-template-rows: 100vh;
   display: flex;
-  height: 100vh;
+  height: 100%;
+  min-height: 100vh;
 `;
 
 export default Layout;

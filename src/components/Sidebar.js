@@ -1,12 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 import moment from "moment";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import StyledLink from "./StyledLink";
 
 function translateDate(date) {
-  switch(date) {
+  switch (date) {
     case "Monday":
       return "Måndag";
     case "Tuesday":
@@ -26,41 +24,41 @@ function translateDate(date) {
   }
 }
 
-function Sidebar({ forecast, weather, isOpen, setIsOpen }) {
+function Sidebar({ forecast, isOpen, setIsOpen }) {
   return (
-    <StyledSidebar>
-      <FontAwesomeIcon
-        icon={faTimes}
-        className="menu-icon"
-        onClick={() => setIsOpen(!isOpen)}
-      />
+    <StyledSidebar isOpen={isOpen}>
       <StyledLink
         className="current-link"
         activeClassName="active"
         to="/current"
+        onClick={() => setIsOpen(false)}
       >
         Nutid
       </StyledLink>
       <section className="days">
         <p className="forecast">Prognos</p>
-        {forecast && forecast.map((day, idx, forecast) => {
-          if (idx % 8 !== 0) return null;
-          const date = moment(day.dt_txt).format("dddd");
-          let translatedDay = translateDate(date);
-          const displayDate = date.replace(date, translatedDay);
-          return (
-            <StyledLink
-              key={`${day.dt}${day.wind.speed}${day.wind.deg}`}
-              activeClassName="active"
-              to={{
-                pathname: `/f/${moment(day.dt_txt).format("dddd").toLowerCase()}`, //"/forecast",
-                state: { day, forecast }
-              }}
-            >
-              {displayDate}
-            </StyledLink>
-          );
-        })}
+        {forecast &&
+          forecast.map((day, idx, forecast) => {
+            if (idx % 8 !== 0) return null;
+            const date = moment(day.dt_txt).format("dddd");
+            let translatedDay = translateDate(date);
+            const displayDate = date.replace(date, translatedDay);
+            return (
+              <StyledLink
+                key={`${day.dt}${day.wind.speed}${day.wind.deg}`}
+                activeClassName="active"
+                to={{
+                  pathname: `/f/${moment(day.dt_txt)
+                    .format("dddd")
+                    .toLowerCase()}`,
+                  state: { day, forecast }
+                }}
+                onClick={() => setIsOpen(false)}
+              >
+                {displayDate}
+              </StyledLink>
+            );
+          })}
       </section>
     </StyledSidebar>
   );
@@ -68,18 +66,17 @@ function Sidebar({ forecast, weather, isOpen, setIsOpen }) {
 
 const StyledSidebar = styled.aside`
   position: fixed;
-  // display: flex;
-  // flex-direction: column;
   display: grid;
-  grid-template-rows: auto 1fr repeat(2, auto) 3fr;
+  grid-template-rows: 1fr repeat(2, auto) 3fr;
   background-color: ${props => props.theme.colors.gray[8]};
   color: white;
   height: 100%;
   width: 184px;
   padding: 26px 22px;
-  transition: 0.2s;
+  transition: all 0.4s;
 
   .menu-icon {
+    display: none;
     grid-row: 1 / span 1;
     font-size: 12px;
     width: 36px;
@@ -109,6 +106,14 @@ const StyledSidebar = styled.aside`
     font-weight: 700;
     margin-top: 50px;
     margin-bottom: 20px;
+  }
+
+  @media (max-width: 950px) {
+    transform: ${props => (props.isOpen ? "" : "translateX(-300px)")};
+
+    .menu-icon {
+      display: unset;
+    }
   }
 `;
 

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Redirect, withRouter, useParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import styled from "styled-components";
 import moment from "moment";
 
@@ -15,19 +17,26 @@ function WeatherInfo({
   city,
   location,
   isOpen,
+  setIsOpen,
   isLoading
 }) {
-  const [weather, setWeather] = useState(null);
+  //const [weather, setWeather] = useState(null);
   const { day } = useParams();
-  if (!weather && !current && location && location.state && location.state.day) {
-    setWeather(location.state.day);
+  let weather;
+  if (
+    !weather &&
+    !current &&
+    location &&
+    location.state &&
+    location.state.day
+  ) {
+    weather = location.state.day;
+    //setWeather(location.state.day);
     console.log("not current");
   } else if (!weather && current) {
-    setWeather(current);
+    weather = current;
+    //setWeather(current);
     console.log("curreeeeent");
-  } else {
-    console.log("redirecting");
-    return <Redirect to="/current" />;
   }
 
   // checka ifall APIen skicka tillbaka data om nederbörd, annars är nederbörd 0
@@ -38,12 +47,19 @@ function WeatherInfo({
 
   return (
     <StyledWeatherInfo isOpen={isOpen}>
+      <FontAwesomeIcon
+        icon={isOpen ? faTimes : faBars}
+        onClick={() => setIsOpen(!isOpen)}
+        className="menu-open"
+      />
       <Search
         handleSubmit={handleSubmit}
         updateSearch={updateSearch}
         search={search}
       />
-      {isLoading ? <Loading /> : (
+      {isLoading ? (
+        <Loading />
+      ) : (
         <>
           <div className="info">
             <img src={`/icons/${weather.weather[0].icon}.svg`} alt="icon" />
@@ -87,20 +103,34 @@ function WeatherInfo({
 const StyledWeatherInfo = styled.main`
   width: 100%;
   height: 100%;
+  min-height: 100vh;
   background-color: ${props => props.theme.colors.gray[7]};
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: ${props => props.isOpen ? "184px" : "0"};
+  margin-left: 184px;
   padding: 60px 0;
   color: white;
-  transition: margin-left 0.8s;
+
+  .menu-open {
+    display: none;
+    position: absolute;
+    top: 26px;
+    left: 22px;
+    font-size: 12px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+  }
 
   .info {
     margin: auto;
-    //display: flex;
-    //align-items: center;
-    //justify-content: center;
 
     display: grid;
     grid-template-columns: auto auto;
@@ -136,6 +166,14 @@ const StyledWeatherInfo = styled.main`
 
   .day-forecast {
     display: flex;
+  }
+
+  @media (max-width: 950px) {
+    margin-left: 0;
+
+    .menu-open {
+      display: unset;
+    }
   }
 `;
 

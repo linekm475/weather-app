@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
 import { ThemeProvider, createGlobalStyle } from "styled-components";
@@ -26,17 +27,32 @@ const App = () => {
   const [search, setSearch] = useState("Stockholm");
   const [city, setCity] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecastWeather, setForecastWeather] = useState(null);
-  const [isOpen, setIsOpen] = useState(true);
-  // const [isMobile, setIsMobile] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     handleSubmit(null);
+    handleResize();
+    window.addEventListener("resize", handleResize);
   }, []);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (isOpen) {
+      // inte klar
+    }
+  }, [isOpen]);
+
+  const handleResize = e => {
+    if (window.innerWidth > 950) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  };
+
+  const handleSubmit = e => {
     if (e) {
       e.preventDefault();
     }
@@ -71,7 +87,7 @@ const App = () => {
       .finally(() => {
         setIsLoading(false);
       });
-  }
+  };
 
   if (error && error.data) {
     return <h1>Error: {error.data.message}</h1>;
@@ -87,20 +103,14 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <Layout>
-            {isOpen && (
-              <Sidebar
-                forecast={forecastWeather}
-                weather={currentWeather}
-                isOpen={isOpen}
-                setIsOpen={setIsOpen}
-              />
-            )}
+            <Sidebar
+              forecast={forecastWeather}
+              weather={currentWeather}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
             <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Redirect to="/current" />}
-              />
+              <Route exact path="/" render={() => <Redirect to="/current" />} />
               <Route
                 path="/current"
                 render={() => (
@@ -110,8 +120,9 @@ const App = () => {
                     updateSearch={e => setSearch(e.target.value)}
                     current={currentWeather}
                     city={city}
-                    isOpen={isOpen}
                     isLoading={isLoading}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
                   />
                 )}
               />
@@ -124,8 +135,9 @@ const App = () => {
                     updateSearch={e => setSearch(e.target.value)}
                     current={null}
                     city={city}
-                    isOpen={isOpen}
                     isLoading={isLoading}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
                   />
                 )}
               />
@@ -135,6 +147,6 @@ const App = () => {
       </ThemeProvider>
     </>
   );
-}
+};
 
 export default App;
