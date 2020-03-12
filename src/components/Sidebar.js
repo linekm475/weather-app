@@ -24,7 +24,13 @@ function translateDate(date) {
   }
 }
 
-function Sidebar({ forecast, isOpen, setIsOpen }) {
+function Sidebar({
+  forecast,
+  isOpen,
+  setIsOpen,
+  isDarkMode,
+  setIsDarkMode
+}) {
   return (
     <StyledSidebar isOpen={isOpen}>
       <StyledLink
@@ -60,6 +66,15 @@ function Sidebar({ forecast, isOpen, setIsOpen }) {
             );
           })}
       </section>
+      <button
+        className="color-mode"
+        onClick={() => {
+          setIsDarkMode(!isDarkMode);
+          setIsOpen(false);
+        }}
+      >
+        {isDarkMode ? "Ljust läge" : "Mörkt läge"}
+      </button>
     </StyledSidebar>
   );
 }
@@ -68,28 +83,13 @@ const StyledSidebar = styled.aside`
   z-index: 10;
   position: fixed;
   display: grid;
-  grid-template-rows: 1fr repeat(2, auto) 3fr;
-  background-color: ${props => props.theme.colors.gray[8]};
-  color: white;
+  grid-template-rows: 1fr repeat(2, auto) 3fr auto;
+  background-color: ${props => props.theme.colors.bgSecondary};
+  color: ${props => props.theme.colors.textMain};
   height: 100%;
   width: 184px;
   padding: 26px 22px;
-  transition: all 0.4s;
-
-  .menu-icon {
-    display: none;
-    grid-row: 1 / span 1;
-    font-size: 12px;
-    width: 36px;
-    height: 36px;
-    padding: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-  }
+  transition: transform 0.4s;
 
   .current-link {
     grid-row: 3 / span 1;
@@ -102,19 +102,35 @@ const StyledSidebar = styled.aside`
   }
 
   .days .forecast {
-    color: rgba(255, 255, 255, 0.8);
+    color: ${props => props.theme.colors.textSecondary};
     font-size: 22px;
     font-weight: 700;
     margin-top: 50px;
     margin-bottom: 20px;
   }
 
+  .color-mode {
+    grid-area: 5 / span 1;
+    background-color: ${props => props.theme.colors.transparent};
+    color: ${props => props.theme.colors.blue};
+    border: none;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    transition: 0.2s;
+
+    &:hover {
+      background-color: ${props => props.theme.colors.blue};
+      color: ${props => props.theme.colors.textMain};
+    }
+  }
+
   @media ${props => props.theme.breakpoints.md} {
     transform: ${props => (props.isOpen ? "" : "translateX(-300px)")};
-
-    .menu-icon {
-      display: unset;
-    }
   }
 `;
 

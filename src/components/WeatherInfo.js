@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Redirect, withRouter, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -8,6 +8,7 @@ import moment from "moment";
 import Search from "./Search";
 import TimeCard from "./TimeCard";
 import Loading from "./Loading";
+import Error from "./Error";
 
 function WeatherInfo({
   current,
@@ -19,7 +20,8 @@ function WeatherInfo({
   location,
   isOpen,
   setIsOpen,
-  isLoading
+  isLoading,
+  error
 }) {
   const { day } = useParams();
   let weather;
@@ -30,24 +32,19 @@ function WeatherInfo({
     dayForecast = forecast.filter(dayForecast => (
       moment(dayForecast.dt_txt).format("dddd").toLowerCase() === day
     ));
+
     const middle = Math.round(dayForecast.length / 2);
-    weather = dayForecast[middle];
+    weather = dayForecast[middle] || dayForecast[0];
   } else {
     return <Redirect to="/current" />
   }
-
-  // checka ifall APIen skicka tillbaka data om nederbörd, annars är nederbörd 0
-  // let rainfall = 0;
-  // if (weather && weather.rain && (weather.rain["3h"] || weather.rain["3h"])) {
-  //   rainfall = weather.rain["3h"] || weather.rain["3h"];
-  // }
 
   return (
     <StyledWeatherInfo isOpen={isOpen}>
       <FontAwesomeIcon
         icon={isOpen ? faTimes : faBars}
         onClick={() => setIsOpen(!isOpen)}
-        className="menu-open"
+        className="menu-toggle"
       />
       <Search
         handleSubmit={handleSubmit}
@@ -56,7 +53,7 @@ function WeatherInfo({
       />
       {isLoading ? (
         <Loading />
-      ) : (
+      ) : error ? <Error error={error} /> : (
         <>
           <div className="info">
             <img src={`/icons/${weather.weather[0].icon}.svg`} alt="icon" />
@@ -89,23 +86,22 @@ function WeatherInfo({
 
 const StyledWeatherInfo = styled.main`
   width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  background-color: ${props => props.theme.colors.gray[7]};
-  display: flex;
-  flex-direction: column;
+  min-height: 100%;
+  background-color: ${props => props.theme.colors.bgMain};
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   align-items: center;
-  justify-content: space-between;
+  justify-items: center;
   margin-left: 184px;
   padding: 60px 0;
-  color: white;
+  color: ${props => props.theme.colors.textMain};
 
-  .menu-open {
+  .menu-toggle {
     z-index: 100;
     display: none;
     position: absolute;
-    top: 26px;
-    left: 22px;
+    top: 20px;
+    left: 20px;
     font-size: 12px;
     width: 36px;
     height: 36px;
@@ -114,7 +110,7 @@ const StyledWeatherInfo = styled.main`
     cursor: pointer;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.4);
+      background-color: ${props => props.theme.colors.hover};
     }
   }
 
@@ -164,7 +160,7 @@ const StyledWeatherInfo = styled.main`
   @media ${props => props.theme.breakpoints.md} {
     margin-left: 0;
 
-    .menu-open {
+    .menu-toggle {
       display: unset;
     }
 
@@ -175,7 +171,7 @@ const StyledWeatherInfo = styled.main`
     }
   }
 
-  @media ${props => props.theme.breakpoints.md} {
+  @media ${props => props.theme.breakpoints.xs} {
     .info {
       grid-gap: 20px 10px;
       img {

@@ -22,38 +22,41 @@ const StyledForm = styled.form`
   display: flex;
   align-items: center;
   input {
-    background-color: ${props => props.theme.colors.gray[8]};
-    color: white;
-    border: 2px solid ${props => props.theme.colors.gray[8]};
+    background-color: ${props => props.theme.colors.bgSecondary};
+    color: ${props => props.theme.colors.textMain};
+    border: 2px solid ${props => props.theme.colors.bgSecondary};
     border-radius: 4px 0 0 4px;
     font-size: 17px;
     padding: 8px;
+    height: 40px;
     outline: none;
 
     &:focus {
-      border: 2px solid ${props => props.theme.colors.gray[5]};
+      border: 2px solid ${props => props.theme.colors.blue};
       border-right: none;
     }
 
     &:focus + button {
-      border: 2px solid ${props => props.theme.colors.gray[5]};
+      border: 2px solid ${props => props.theme.colors.blue};
       border-left: none;
     }
   }
 
   button {
-    background-color: black;
-    border: 2px solid black;
+    background-color: ${props => props.theme.colors.bgSecondary};
+    border: 2px solid ${props => props.theme.colors.bgSecondary};
     border-radius: 0 3px 3px 0;
-    color: white;
+    color: ${props => props.theme.colors.textMain};
     font-size: 14px;
     font-weight: 700;
     padding: 9px 25px;
     cursor: pointer;
-    height: 100%;
+    height: 40px;
+    outline: none;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: ${props => props.theme.colors.hover};
+      border: 2px solid ${props => props.theme.colors.hover};
     }
   }
 `;

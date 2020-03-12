@@ -17,7 +17,7 @@ const StyledTimeCard = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: ${props => props.theme.colors.bgTertiary};
   padding: 10px;
   margin: 4px;
   width: 80px;

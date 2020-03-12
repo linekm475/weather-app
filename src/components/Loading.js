@@ -13,11 +13,11 @@ const spin = keyframes`
 const Loading = styled.div`
   width: 70px;
   height: 70px;
-  background-color: rgba(0, 0, 0, 0);
+  background-color: ${props => props.theme.colors.transparent};
   margin: auto 0;
   border-radius: 50%;
-  border: 8px solid gray;
-  border-top: 8px solid blue;
+  border: 8px solid ${props => props.theme.colors.bgSecondary};
+  border-top: 8px solid ${props => props.theme.colors.blue};
   animation: 0.8s infinite ${spin} ease-in-out;
 `;
 

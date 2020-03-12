@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
 import axios from "axios";
-import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
+import { ThemeProvider, createGlobalStyle } from "styled-components";
 
-import theme from "../theme";
+import { darkMode, lightMode } from "../theme";
 import Sidebar from "./Sidebar";
 import WeatherInfo from "./WeatherInfo";
 import Layout from "./Layout";
-import Loading from "./Loading";
 import Overlay from "./Overlay";
 
 const GlobalStyle = createGlobalStyle`
@@ -31,6 +30,7 @@ const App = () => {
   const [currentWeather, setCurrentWeather] = useState(null);
   const [forecastWeather, setForecastWeather] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   useEffect(() => {
     handleSubmit(null);
@@ -69,6 +69,9 @@ const App = () => {
         const current = res[0].data;
         const forecast = res[1].data;
 
+        // ta bort tidigare error om det finns
+        setError(null);
+
         // spara väderdata för nutid
         setCurrentWeather(current);
         // spara data för prognos, är en array för varje tid prognosen visar
@@ -81,22 +84,18 @@ const App = () => {
         setError(err.response || err);
       })
       .finally(() => {
+        setSearch("");
         setIsLoading(false);
       });
   };
 
-  if (error && error.data) {
-    return <h1>Error: {error.data.message}</h1>;
-  } else if (error) {
-    return <h1>Error: {error.message || ""}</h1>;
-  }
   {
     /* ThemeProvider get applikationen ett tema som är definerat i src/theme.js ett tema för att enkelt kunna använda färger */
   }
   return (
     <>
       <GlobalStyle isOpen={isOpen} />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={isDarkMode ? darkMode : lightMode}>
         <BrowserRouter>
           <Layout>
             <Sidebar
@@ -104,6 +103,8 @@ const App = () => {
               weather={currentWeather}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
+              isDarkMode={isDarkMode}
+              setIsDarkMode={setIsDarkMode}
             />
             <Switch>
               <Route exact path="/" render={() => <Redirect to="/current" />} />
@@ -118,6 +119,7 @@ const App = () => {
                     forecast={null}
                     city={city}
                     isLoading={isLoading}
+                    error={error}
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
                   />
@@ -134,6 +136,7 @@ const App = () => {
                     forecast={forecastWeather}
                     city={city}
                     isLoading={isLoading}
+                    error={error}
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
                   />

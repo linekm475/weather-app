@@ -4,11 +4,11 @@ const Overlay = styled.div`
   display: block;
   visibility: hidden;
   position: absolute;
-  left 0; //184px;
+  left 0;
   top: 0;
   bottom: 0;
   right: 0;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: ${props => props.theme.colors.overlay};
   opacity: 0;
   transition: 0.3s;
 
