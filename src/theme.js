@@ -2,6 +2,7 @@ export const darkMode = {
   isDarkMode: true,
   colors: {
     error: "#E53E3E",
+    success: "#48BB78",
     blue: "#2B6CB0",
     bgMain: "#2D3748",
     bgSecondary: "#1A202C",
@@ -23,6 +24,7 @@ export const lightMode = {
   isDarkMode: false,
   colors: {
     error: "#E53E3E",
+    success: "#48BB78",
     blue: "#3182CE",
     bgMain: "#fff", //E2E8F0
     bgSecondary: "#E2E8F0",

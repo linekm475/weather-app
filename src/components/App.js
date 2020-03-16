@@ -31,6 +31,9 @@ const App = () => {
   const [forecastWeather, setForecastWeather] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [showSuccess, setShowSuccess] = useState(false);
+  // kommer användas för att spara timeout id ifall timeout ska avbrytas
+  let timeout;
 
   useEffect(() => {
     handleSubmit(null);
@@ -39,6 +42,9 @@ const App = () => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      if(timeout) {
+        clearTimeout(timeout);
+      }
     }
   }, []);
 
@@ -71,6 +77,8 @@ const App = () => {
 
         // ta bort tidigare error om det finns
         setError(null);
+        setShowSuccess(true);
+        timeout = setTimeout(() => setShowSuccess(false), 2000);
 
         // spara väderdata för nutid
         setCurrentWeather(current);
@@ -82,6 +90,7 @@ const App = () => {
       .catch(err => {
         // om APIen skickar tillbaka ett error
         setError(err.response || err);
+        setShowSuccess(false);
       })
       .finally(() => {
         setSearch("");
@@ -122,6 +131,7 @@ const App = () => {
                     error={error}
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
+                    showSuccess={showSuccess}
                   />
                 )}
               />
@@ -139,6 +149,7 @@ const App = () => {
                     error={error}
                     isOpen={isOpen}
                     setIsOpen={setIsOpen}
+                    showSuccess={showSuccess}
                   />
                 )}
               />

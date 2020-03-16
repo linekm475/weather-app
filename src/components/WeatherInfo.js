@@ -9,6 +9,7 @@ import Search from "./Search";
 import TimeCard from "./TimeCard";
 import Loading from "./Loading";
 import Error from "./Error";
+import Success from "./Success";
 
 function WeatherInfo({
   current,
@@ -21,11 +22,13 @@ function WeatherInfo({
   isOpen,
   setIsOpen,
   isLoading,
-  error
+  error,
+  showSuccess
 }) {
   const { day } = useParams();
   let weather;
   let dayForecast;
+
   if (!weather && current) {
     weather = current;
   } else if (!weather && forecast) {
@@ -55,6 +58,7 @@ function WeatherInfo({
         <Loading />
       ) : error ? <Error error={error} /> : (
         <>
+          {showSuccess && <Success>Prognos uppdaterad</Success>}
           <div className="info">
             <img src={`/icons/${weather.weather[0].icon}.svg`} alt="icon" />
             <div>
@@ -89,7 +93,7 @@ const StyledWeatherInfo = styled.main`
   min-height: 100%;
   background-color: ${props => props.theme.colors.bgMain};
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   align-items: center;
   justify-items: center;
   margin-left: 184px;
@@ -116,6 +120,7 @@ const StyledWeatherInfo = styled.main`
 
   .info {
     margin: 40px auto;
+    grid-row: 3 / span 1;
 
     display: grid;
     grid-template-columns: auto auto;
@@ -150,6 +155,7 @@ const StyledWeatherInfo = styled.main`
   }
 
   .day-forecast {
+    grid-row: 4 / span 1;
     width: 95%;
     margin: 0 auto;
     display: flex;
