@@ -24,9 +24,9 @@ export const lightMode = {
   colors: {
     error: "#E53E3E",
     blue: "#3182CE",
-    bgMain: "#E2E8F0",
-    bgSecondary: "#CBD5E0",
-    bgTertiary: "#d0d9e2",
+    bgMain: "#fff", //E2E8F0
+    bgSecondary: "#E2E8F0",
+    bgTertiary: "#e6ebf2",
     transparent: "rgba(0, 0, 0, 0)",
     textMain: "#000",
     textSecondary: "#2D3748",
