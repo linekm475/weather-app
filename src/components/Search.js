@@ -5,14 +5,17 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const Search = ({ handleSubmit, updateSearch, search }) => (
   <StyledForm onSubmit={handleSubmit}>
-    <input
-      type="text"
-      placeholder="Plats..."
-      onChange={updateSearch}
-      onBlur={updateSearch}
-      value={search}
-    />
-    <button type="submit">
+    <label>
+      Sök plats	
+      <input
+        type="text"
+        placeholder="Plats..."
+        onChange={updateSearch}
+        onBlur={updateSearch}
+        value={search}
+      />
+    </label>
+    <button type="submit" aria-label="submit search">
       <FontAwesomeIcon icon={faSearch} />
     </button>
   </StyledForm>
@@ -21,6 +24,11 @@ const Search = ({ handleSubmit, updateSearch, search }) => (
 const StyledForm = styled.form`
   display: flex;
   align-items: center;
+
+  label {
+    display: flex;
+    flex-direction: column;
+  }
   input {
     background-color: ${props => props.theme.colors.bgSecondary};
     color: ${props => props.theme.colors.textMain};
@@ -36,13 +44,10 @@ const StyledForm = styled.form`
       border-right: none;
     }
 
-    &:focus + button {
-      border: 2px solid ${props => props.theme.colors.blue};
-      border-left: none;
-    }
   }
 
   button {
+    align-self: flex-end;
     background-color: ${props => props.theme.colors.bgSecondary};
     border: 2px solid ${props => props.theme.colors.bgSecondary};
     border-radius: 0 3px 3px 0;
@@ -54,7 +59,7 @@ const StyledForm = styled.form`
     height: 40px;
     outline: none;
 
-    &:hover {
+    &:hover, &:focus {
       background-color: ${props => props.theme.colors.hover};
       border: 2px solid ${props => props.theme.colors.hover};
     }
